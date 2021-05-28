@@ -13,11 +13,11 @@ from moviepy.editor import AudioFileClip
 songUrl = sys.argv[1]                                       # To store song original url
 
 fetch = fetcher.Fetcher()
-fetch.download(songUrl)
+metaData = fetch.download(songUrl)
 
 # Converting raw song to mp3
-audioFile = AudioFileClip('test.mp4')
-audioFile.write_audiofile('test.mp3', bitrate='500k')
+audioFile = AudioFileClip('temp.mp4')
+audioFile.write_audiofile((metaData["title"] + '.mp3'), bitrate='500k')
 
 # Deleting raw song
-os.remove('test.mp4')
+os.remove('temp.mp4')

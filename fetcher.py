@@ -1,5 +1,7 @@
 # This file contains various method to fetch raw song from cdn
 
+from os import system
+import sys
 import requests
 import json
 import meta
@@ -7,7 +9,6 @@ import meta
 class Fetcher:
     # The constructor
     def __init__(self):
-        self.found = False                                               # To store whether song was found or not
         self.mData = None                                                # Object to store and manitpulate meta
 
     # Method to extract song name from url
@@ -50,7 +51,7 @@ class Fetcher:
                 encryptedUrl = song["more_info"]["encrypted_media_url"]
                 found = True
                 # Create and store meta data
-                mData = meta.Metadata(song)
+                self.mData = song
                 break
         
         # If song was found
@@ -58,7 +59,8 @@ class Fetcher:
             return encryptedUrl
         # If not found
         else:
-            return None
+            print("URL Not found! Please double check the URL!")
+            sys.exit()
 
     # Method to get authentication token
     def fetchAuthUrl(self, encryptedUrl):
@@ -112,6 +114,7 @@ class Fetcher:
         # Returning cdn url
         return cdnUrl
 
-    # Method to download the actual media
+    # Method to download the actual media and return meta data
     def download(self, songUrl):
-        open('test.mp4', 'wb').write(requests.get(self.fetchSong(songUrl)).content)
+        open('temp.mp4', 'wb').write(requests.get(self.fetchSong(songUrl)).content)
+        return self.mData
