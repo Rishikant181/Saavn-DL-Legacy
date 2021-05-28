@@ -6,18 +6,26 @@
 
 import os
 import sys
+import meta
 
 import fetcher
 from moviepy.editor import AudioFileClip
 
 songUrl = sys.argv[1]                                       # To store song original url
+curSong = None                                              # To store name of current song
 
 fetch = fetcher.Fetcher()
 metaData = fetch.download(songUrl)
+curSong = metaData['title']
 
 # Converting raw song to mp3
 audioFile = AudioFileClip('temp.mp4')
-audioFile.write_audiofile((metaData["title"] + '.mp3'), bitrate='500k')
+audioFile.write_audiofile((curSong + '.mp3'), bitrate='500k')
 
-# Deleting raw song
+# Embedding metaData in mp3
+Meta = meta.Metadata(curSong, metaData)
+Meta.embbed()
+
+# Deleting raw song and cover art
 os.remove('temp.mp4')
+os.remove('temp.jpg')

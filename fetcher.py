@@ -4,7 +4,6 @@ from os import system
 import sys
 import requests
 import json
-import meta
 
 class Fetcher:
     # The constructor
@@ -46,9 +45,9 @@ class Fetcher:
         jsonResults = json.loads(results)
 
         # Iterating through list to get correct encrypted_media_url
-        for song in jsonResults["results"]:
+        for song in jsonResults['results']:
             if(song["perma_url"] == songUrl):
-                encryptedUrl = song["more_info"]["encrypted_media_url"]
+                encryptedUrl = song['more_info']['encrypted_media_url']
                 found = True
                 # Create and store meta data
                 self.mData = song
@@ -114,7 +113,8 @@ class Fetcher:
         # Returning cdn url
         return cdnUrl
 
-    # Method to download the actual media and return meta data
+    # Method to download the actual media and cover art and return meta data
     def download(self, songUrl):
         open('temp.mp4', 'wb').write(requests.get(self.fetchSong(songUrl)).content)
+        open('temp.jpg', 'wb').write(requests.get(self.mData['image'].replace("150x150", "500x500")).content)
         return self.mData
