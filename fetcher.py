@@ -4,6 +4,7 @@ from os import system
 import sys
 import requests
 import json
+import bs4
 
 class Fetcher:
     # The constructor
@@ -118,3 +119,54 @@ class Fetcher:
         open('temp.mp4', 'wb').write(requests.get(self.fetchSong(songUrl)).content)
         open('temp.jpg', 'wb').write(requests.get(self.mData['image'].replace("150x150", "500x500")).content)
         return self.mData
+
+    # Method to get playlistId
+    def getPlaylistId(self, listUrl):
+        listId = None                                               # To store playlist id
+        # Getting html response
+        response = requests.get(listUrl).text
+
+        # Extracting playlist id from reponse
+        soup = bs4.BeautifulSoup(response, 'html.parser')
+
+        # Finding the tag where playlist id is stored
+        for tag in soup.find_all("meta"):
+            try:
+                if(tag['property'] == "og:image"):
+                    listId = tag['content']
+                    break
+            except:
+                continue
+        
+        # Getting id
+        return listId[listId.index('/', listId.index('/', listId.index('/', listId.index('/', listId.index("//") + 1) + 1) + 1) + 1) + 1:listId.index('_')]
+
+    # Method to get songs from playlist
+    def getSongsFromPlaylist(self, listUrl):
+        listId = self.getPlaylistId(listUrl)
+
+        # Making request to get all songs in playlist
+        # Settings params
+        params = {
+            "__call": "playlist.getDetails",
+            "listid": listId,
+            "api_version": 4,
+            "_format": "json",
+            "_marker": 0,
+            "ctx": "web6dot0"
+        }
+
+        # Sending request
+        response = requests.get("https://www.jiosaavn.com/api.php", params)
+
+        # Getting response raw content
+        results = response.content.decode('utf-8')
+
+        # Stripping extras
+        results = results.strip()
+
+        # Converting content to dict
+        jsonResults = json.loads(results)
+
+        # Returning auth_url
+        return jsonResults["list"]
