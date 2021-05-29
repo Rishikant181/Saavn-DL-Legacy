@@ -45,7 +45,7 @@ class Main:
     # Method to check if url is single song or playlist
     def isPlaylist(self):
         # If single song
-        if(self.url.index(".com/song/") != -1):
+        if(".com/song/" in self.url):
             return False
         # If playlist
         else:
