@@ -7,7 +7,6 @@
 import os
 import sys
 import meta
-
 import fetcher
 from moviepy.editor import AudioFileClip
 
