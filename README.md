@@ -7,3 +7,5 @@ Install the packages in requirements.txt before using(I would recommend using a 
 Type: python saavndl.py --help for usage.
 
 *NOTE* This tool is still in early stages. Now it works as a basic downloader. Improvements are bound to happen.
+
+*WARNING* : USE THIS FOR EDUCATIONAL PURPOSE ONLY!
